@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="BranchScribe.Views.ReviewPackPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:helpers="using:BranchScribe.Helpers">
+
+    <Page.Resources>
+        <helpers:InvertBoolConverter x:Key="InvertBoolConverter" />
+        <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    </Page.Resources>
+
+    <Grid Background="#FFFFFF">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Page header with customer name -->
+        <Border Grid.Row="0" Background="#FFFFFF" BorderBrush="#E5E7EB" BorderThickness="0,0,0,1"
+                Padding="32,20,32,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Style="{StaticResource PageTitleStyle}">
+                        <Run Text="Review Pack — " />
+                        <Run Text="{x:Bind ViewModel.CustomerName, Mode=OneWay}" FontWeight="Bold" />
+                    </TextBlock>
+                    <TextBlock Text="Generated meeting documentation and follow-up actions"
+                               Style="{StaticResource CaptionStyle}" Margin="0,2,0,0" />
+                </StackPanel>
+                <!-- Sentiment badge -->
+                <Border Grid.Column="1" Background="#19352F" CornerRadius="20" Padding="16,8"
+                        VerticalAlignment="Center" BorderBrush="#BBF7D0" BorderThickness="1">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="{x:Bind ViewModel.SentimentEmoji, Mode=OneWay}" FontSize="18"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Text="{x:Bind ViewModel.SentimentAnalysis, Mode=OneWay}"
+                                   FontSize="12" Foreground="#7DE2B8" VerticalAlignment="Center"
+                                   MaxWidth="250" TextTrimming="CharacterEllipsis"
+                                   FontFamily="Segoe UI Variable, Segoe UI" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1" Padding="32,24,32,24">
+            <StackPanel Spacing="20" MaxWidth="900">
+
+                <!-- Advisor Summary — navy accent -->
+                <Border Background="#FFFFFF" BorderBrush="#E5E7EB" BorderThickness="1"
+                        CornerRadius="8" Padding="0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Background="#18181B" CornerRadius="8,0,0,8" />
+                        <StackPanel Grid.Column="1" Spacing="12" Padding="24,20">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets"
+                                           FontSize="18" Foreground="#18181B"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Text="Advisor Summary" Style="{StaticResource SectionHeaderStyle}" />
+                            </StackPanel>
+                            <TextBlock Text="{x:Bind ViewModel.AdvisorSummary, Mode=OneWay}"
+                                       TextWrapping="Wrap" FontSize="14" Foreground="#18181B"
+                                       FontFamily="Segoe UI Variable, Segoe UI"
+                                       LineHeight="22" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Follow-up Calendar Suggestion — blue accent -->
+                <Border Background="#FFFFFF" BorderBrush="#E5E7EB" BorderThickness="1"
+                        CornerRadius="8" Padding="0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Background="#3B82F6" CornerRadius="8,0,0,8" />
+                        <StackPanel Grid.Column="1" Spacing="12" Padding="24,20">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="&#xE787;" FontFamily="Segoe MDL2 Assets"
+                                           FontSize="18" Foreground="#3B82F6"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Text="Suggested Follow-up" FontSize="20"
+                                           FontWeight="SemiBold" Foreground="#18181B"
+                                           FontFamily="Segoe UI Variable, Segoe UI" />
+                            </StackPanel>
+                            <Border Background="#EFF6FF" CornerRadius="6" Padding="16,12">
+                                <TextBlock Text="{x:Bind ViewModel.FollowUpSlot, Mode=OneWay}"
+                                           TextWrapping="Wrap" FontSize="14" Foreground="#1E40AF"
+                                           FontFamily="Segoe UI Variable, Segoe UI"
+                                           LineHeight="24" />
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Missing Confirmations — warning/amber accent -->
+                <Border Background="#FFFFFF" BorderBrush="#E5E7EB" BorderThickness="1"
+                        CornerRadius="8" Padding="0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Background="#C77B00" CornerRadius="8,0,0,8" />
+                        <StackPanel Grid.Column="1" Spacing="12" Padding="24,20">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets"
+                                           FontSize="18" Foreground="#C77B00"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Text="Outstanding Items" FontSize="20"
+                                           FontWeight="SemiBold" Foreground="#18181B"
+                                           FontFamily="Segoe UI Variable, Segoe UI" />
+                            </StackPanel>
+                            <Border Background="#3A2B16" CornerRadius="6" Padding="16,12">
+                                <TextBlock Text="{x:Bind ViewModel.MissingConfirmations, Mode=OneWay}"
+                                           TextWrapping="Wrap" FontSize="14" Foreground="#A15F00"
+                                           FontFamily="Segoe UI Variable, Segoe UI"
+                                           LineHeight="22" />
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Email Draft — green accent -->
+                <Border Background="#FFFFFF" BorderBrush="#E5E7EB" BorderThickness="1"
+                        CornerRadius="8" Padding="0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Background="#0B5CAD" CornerRadius="8,0,0,8" />
+                        <StackPanel Grid.Column="1" Spacing="12" Padding="24,20">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="&#xE715;" FontFamily="Segoe MDL2 Assets"
+                                               FontSize="18" Foreground="#0B5CAD"
+                                               VerticalAlignment="Center" />
+                                    <TextBlock Text="Customer Email Draft" FontSize="20"
+                                               FontWeight="SemiBold" Foreground="#18181B"
+                                               FontFamily="Segoe UI Variable, Segoe UI" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                    <Button Content="✏️ Edit" Command="{x:Bind ViewModel.EditEmailCommand}"
+                                            Style="{StaticResource GhostButtonStyle}" />
+                                    <Button Content="📧 Send to Customer" Command="{x:Bind ViewModel.SendEmailCommand}"
+                                            Style="{StaticResource PrimaryButtonStyle}" />
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Sent confirmation -->
+                            <Border Background="#19352F" CornerRadius="6" Padding="12,8"
+                                    Visibility="{x:Bind ViewModel.EmailSent, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <TextBlock Text="✅ Email sent successfully to customer"
+                                           FontSize="13" Foreground="#7DE2B8"
+                                           FontFamily="Segoe UI Variable, Segoe UI" />
+                            </Border>
+
+                            <!-- Email content (editable or read-only) -->
+                            <TextBox Text="{x:Bind ViewModel.EmailDraft, Mode=TwoWay}"
+                                     IsReadOnly="{x:Bind ViewModel.IsEmailEditable, Mode=OneWay, Converter={StaticResource InvertBoolConverter}}"
+                                     TextWrapping="Wrap" AcceptsReturn="True"
+                                     FontSize="13" FontFamily="Segoe UI Variable, Segoe UI"
+                                     MinHeight="300" MaxHeight="500"
+                                     BorderThickness="1" BorderBrush="#E5E7EB"
+                                     CornerRadius="6" Padding="16,12" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Action Checklist — navy accent -->
+                <Border Background="#FFFFFF" BorderBrush="#E5E7EB" BorderThickness="1"
+                        CornerRadius="8" Padding="0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Background="#18181B" CornerRadius="8,0,0,8" />
+                        <StackPanel Grid.Column="1" Spacing="12" Padding="24,20">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="&#xE73A;" FontFamily="Segoe MDL2 Assets"
+                                           FontSize="18" Foreground="#18181B"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Text="Action Checklist" Style="{StaticResource SectionHeaderStyle}" />
+                            </StackPanel>
+                            <TextBlock Text="{x:Bind ViewModel.ActionChecklist, Mode=OneWay}"
+                                       TextWrapping="Wrap" FontSize="14" Foreground="#18181B"
+                                       FontFamily="Segoe UI Variable, Segoe UI"
+                                       LineHeight="22" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Field Citations — gray accent -->
+                <Border Background="#FFFFFF" BorderBrush="#E5E7EB" BorderThickness="1"
+                        CornerRadius="8" Padding="0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Background="#71717A" CornerRadius="8,0,0,8" />
+                        <StackPanel Grid.Column="1" Spacing="12" Padding="24,20">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="&#xE71B;" FontFamily="Segoe MDL2 Assets"
+                                           FontSize="18" Foreground="#71717A"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Text="Field Citations" FontSize="20"
+                                           FontWeight="SemiBold" Foreground="#18181B"
+                                           FontFamily="Segoe UI Variable, Segoe UI" />
+                            </StackPanel>
+                            <TextBlock Text="{x:Bind ViewModel.FieldCitations, Mode=OneWay}"
+                                       TextWrapping="Wrap" FontSize="13" Foreground="#18181B"
+                                       FontFamily="Consolas"
+                                       LineHeight="20" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>
+
+
+

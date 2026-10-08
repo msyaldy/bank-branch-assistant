@@ -1,0 +1,127 @@
+{
+  "schemaId": "mortgage_fact_find",
+  "name": "Mortgage Fact Find",
+  "version": "1.0",
+  "fields": [
+    {
+      "fieldId": "customer_name",
+      "label": "Customer Full Name",
+      "type": "text",
+      "required": true,
+      "validationRules": ["not_empty"],
+      "promptTemplate": "Could I take your full name, please?",
+      "dependsOn": [],
+      "options": []
+    },
+    {
+      "fieldId": "date_of_birth",
+      "label": "Date of Birth",
+      "type": "date",
+      "required": true,
+      "validationRules": ["valid_date", "age_18_plus"],
+      "promptTemplate": "And your date of birth?",
+      "dependsOn": ["customer_name"],
+      "options": []
+    },
+    {
+      "fieldId": "annual_income",
+      "label": "Annual Income (before tax)",
+      "type": "number",
+      "required": true,
+      "validationRules": ["positive_number"],
+      "promptTemplate": "What is your current annual income before tax?",
+      "dependsOn": ["customer_name"],
+      "options": []
+    },
+    {
+      "fieldId": "partner_income",
+      "label": "Partner Annual Income",
+      "type": "number",
+      "required": false,
+      "validationRules": ["positive_number"],
+      "promptTemplate": "Does your partner have an income? If so, what is their annual income?",
+      "dependsOn": ["customer_name"],
+      "options": []
+    },
+    {
+      "fieldId": "employment_status",
+      "label": "Employment Status",
+      "type": "select",
+      "required": true,
+      "validationRules": ["not_empty"],
+      "promptTemplate": "What is your current employment status?",
+      "dependsOn": ["customer_name"],
+      "options": ["Employed", "Self-employed", "Retired", "Unemployed", "Student"]
+    },
+    {
+      "fieldId": "employer_name",
+      "label": "Employer Name",
+      "type": "text",
+      "required": true,
+      "validationRules": ["not_empty"],
+      "promptTemplate": "Who is your current employer?",
+      "dependsOn": ["employment_status"],
+      "options": []
+    },
+    {
+      "fieldId": "outstanding_debts",
+      "label": "Outstanding Debts",
+      "type": "text",
+      "required": true,
+      "validationRules": [],
+      "promptTemplate": "Do you have any outstanding debts, loans, or credit commitments?",
+      "dependsOn": ["customer_name"],
+      "options": []
+    },
+    {
+      "fieldId": "property_value_range",
+      "label": "Property Value Range",
+      "type": "text",
+      "required": true,
+      "validationRules": ["not_empty"],
+      "promptTemplate": "What property value range are you considering?",
+      "dependsOn": ["annual_income"],
+      "options": []
+    },
+    {
+      "fieldId": "deposit_amount",
+      "label": "Deposit Amount",
+      "type": "number",
+      "required": true,
+      "validationRules": ["positive_number"],
+      "promptTemplate": "How much deposit do you have available?",
+      "dependsOn": ["property_value_range"],
+      "options": []
+    },
+    {
+      "fieldId": "rate_preference",
+      "label": "Rate Preference",
+      "type": "select",
+      "required": true,
+      "validationRules": ["not_empty"],
+      "promptTemplate": "Do you have a preference for a fixed or variable interest rate?",
+      "dependsOn": ["deposit_amount"],
+      "options": ["2-year fixed", "3-year fixed", "5-year fixed", "10-year fixed", "Variable", "Tracker"]
+    },
+    {
+      "fieldId": "monthly_expenses",
+      "label": "Monthly Living Expenses",
+      "type": "number",
+      "required": true,
+      "validationRules": ["positive_number"],
+      "promptTemplate": "Roughly what are your total monthly living expenses?",
+      "dependsOn": ["annual_income"],
+      "options": []
+    },
+    {
+      "fieldId": "credit_score_consent",
+      "label": "Credit Score Check Consent",
+      "type": "boolean",
+      "required": true,
+      "validationRules": [],
+      "promptTemplate": "Do we have your consent to run a credit check?",
+      "dependsOn": ["customer_name"],
+      "options": []
+    }
+  ]
+}

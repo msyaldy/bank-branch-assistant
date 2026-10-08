@@ -1,0 +1,6 @@
+<Project>
+  <!-- Satisfy MSIX BuildTools validation for CLI builds without Visual Studio -->
+  <PropertyGroup>
+    <_IsMsixCustomBeforeMicrosoftCommonTargetsChainValid>true</_IsMsixCustomBeforeMicrosoftCommonTargetsChainValid>
+  </PropertyGroup>
+</Project>

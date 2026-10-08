@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- TODO: XamlControlsResources requires VS Build Tools for proper PRI generation.
+     All views use only basic XAML controls to avoid that dependency. -->
+<Application
+    x:Class="BranchScribe.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <!-- ═══════════════════════════════════════════════════
+                 BranchScribe Design System — Banking Design Language
+                 ═══════════════════════════════════════════════════ -->
+
+            <!-- Foundry-inspired dark surfaces with high-contrast accents -->
+            <Style x:Key="CardStyle" TargetType="Border">
+                <Setter Property="Background" Value="#FFFFFF" />
+                <Setter Property="BorderBrush" Value="#E5E7EB" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="CornerRadius" Value="10" />
+                <Setter Property="Padding" Value="20" />
+            </Style>
+
+            <!-- Primary button: Foundry-inspired blue -->
+            <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="#0B5CAD" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="Padding" Value="16,10" />
+                <Setter Property="CornerRadius" Value="7" />
+                <Setter Property="FontFamily" Value="Segoe UI Variable, Segoe UI" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="BorderThickness" Value="0" />
+            </Style>
+
+            <!-- Accent button: bright blue -->
+            <Style x:Key="AccentButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="#1677D2" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="Padding" Value="16,10" />
+                <Setter Property="CornerRadius" Value="6" />
+                <Setter Property="FontFamily" Value="Segoe UI Variable, Segoe UI" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="BorderThickness" Value="0" />
+            </Style>
+
+            <!-- Ghost button: dark surface with subtle border -->
+            <Style x:Key="GhostButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="#FFFFFF" />
+                <Setter Property="Foreground" Value="#18181B" />
+                <Setter Property="Padding" Value="16,10" />
+                <Setter Property="CornerRadius" Value="6" />
+                <Setter Property="FontFamily" Value="Segoe UI Variable, Segoe UI" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="BorderBrush" Value="#D4D4D8" />
+                <Setter Property="BorderThickness" Value="1" />
+            </Style>
+
+            <Style TargetType="TextBox">
+                <Setter Property="Background" Value="#FFFFFF" />
+                <Setter Property="Foreground" Value="#18181B" />
+                <Setter Property="BorderBrush" Value="#C9DFF2" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="FontFamily" Value="Segoe UI Variable, Segoe UI" />
+            </Style>
+
+            <!-- Nav button style for sidebar -->
+            <Style x:Key="NavButtonStyle" TargetType="Button">
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="HorizontalContentAlignment" Value="Left" />
+                <Setter Property="Padding" Value="14,12" />
+                <Setter Property="Margin" Value="8,2" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Foreground" Value="#B8B8C2" />
+                <Setter Property="CornerRadius" Value="6" />
+                <Setter Property="FontFamily" Value="Segoe UI Variable, Segoe UI" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="BorderThickness" Value="0" />
+            </Style>
+
+            <!-- Nav button active state -->
+            <Style x:Key="NavButtonActiveStyle" TargetType="Button">
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="HorizontalContentAlignment" Value="Left" />
+                <Setter Property="Padding" Value="14,12" />
+                <Setter Property="Margin" Value="8,2" />
+                <Setter Property="Background" Value="#E8F2FC" />
+                <Setter Property="Foreground" Value="#0B5CAD" />
+                <Setter Property="CornerRadius" Value="6" />
+                <Setter Property="FontFamily" Value="Segoe UI Variable, Segoe UI" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="BorderThickness" Value="0" />
+            </Style>
+
+            <!-- Section header text -->
+            <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Foreground" Value="#18181B" />
+                <Setter Property="FontFamily" Value="Segoe UI Variable, Segoe UI" />
+            </Style>
+
+            <!-- Page title text -->
+            <Style x:Key="PageTitleStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="28" />
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="Foreground" Value="#18181B" />
+                <Setter Property="FontFamily" Value="Segoe UI Variable, Segoe UI" />
+            </Style>
+
+            <!-- Caption text: 12px gray -->
+            <Style x:Key="CaptionStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="Foreground" Value="#71717A" />
+                <Setter Property="FontFamily" Value="Segoe UI Variable, Segoe UI" />
+            </Style>
+
+            <!-- Hero metric value: 36px Bold -->
+            <Style x:Key="MetricValueStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="36" />
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="Foreground" Value="#18181B" />
+                <Setter Property="FontFamily" Value="Segoe UI Variable, Segoe UI" />
+            </Style>
+
+            <!-- Badge: pill shape, colored background -->
+            <Style x:Key="BadgeStyle" TargetType="Border">
+                <Setter Property="CornerRadius" Value="20" />
+                <Setter Property="Padding" Value="10,4" />
+                <Setter Property="Background" Value="#19352F" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

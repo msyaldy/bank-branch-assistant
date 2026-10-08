@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="BranchScribe.Views.SessionPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:helpers="using:BranchScribe.Helpers"
+    xmlns:models="using:BranchScribe.Models">
+
+    <Page.Resources>
+        <helpers:InvertBoolConverter x:Key="InvertBoolConverter" />
+        <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    </Page.Resources>
+
+    <Grid Background="#FFFFFF">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Top bar: title + controls -->
+        <Border Grid.Row="0" Background="#FFFFFF" BorderBrush="#E5E7EB" BorderThickness="0,0,0,1"
+                Padding="32,20,32,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock Text="Live Session" Style="{StaticResource PageTitleStyle}" />
+                    <TextBlock Text="Real-time transcription and field extraction"
+                               Style="{StaticResource CaptionStyle}" Margin="0,2,0,0" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8"
+                            VerticalAlignment="Center">
+                    <Button Content="Start Session" Command="{x:Bind ViewModel.StartSessionCommand}"
+                            IsEnabled="{x:Bind ViewModel.IsRecording, Converter={StaticResource InvertBoolConverter}, Mode=OneWay}"
+                            Style="{StaticResource PrimaryButtonStyle}" />
+                    <Button Content="Stop Session" Command="{x:Bind ViewModel.StopSessionCommand}"
+                            IsEnabled="{x:Bind ViewModel.IsRecording, Mode=OneWay}"
+                            Style="{StaticResource GhostButtonStyle}" />
+                    <Button Content="Generate Pack" Command="{x:Bind ViewModel.GeneratePackCommand}"
+                            Style="{StaticResource AccentButtonStyle}" />
+                    <Button Command="{x:Bind ViewModel.ToggleAssistantPanelCommand}"
+                            Style="{StaticResource GhostButtonStyle}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock Text="&#xE8BD;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Text="Assistant" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main content area -->
+        <Grid Grid.Row="1" Padding="32,24,32,24" ColumnSpacing="24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="340" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Left column: main session content -->
+            <ScrollViewer Grid.Column="0">
+                <StackPanel Spacing="20">
+
+                    <!-- Session Status Card -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Session Status" FontSize="16" FontWeight="SemiBold"
+                                       Foreground="#18181B" FontFamily="Segoe UI Variable, Segoe UI" />
+                            <StackPanel Orientation="Horizontal" Spacing="8"
+                                        Visibility="{x:Bind ViewModel.IsRecording, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                                <Ellipse Width="10" Height="10" Fill="#DC3545"
+                                         VerticalAlignment="Center" />
+                                <TextBlock Text="Recording" Foreground="#DC3545" FontWeight="SemiBold"
+                                           FontSize="14" FontFamily="Segoe UI Variable, Segoe UI" />
+                            </StackPanel>
+                            <!-- NPU Processing indicator -->
+                            <TextBlock Text="⚡ NPU Processing (Phi on-device)" Foreground="#3B82F6"
+                                       FontWeight="SemiBold" FontSize="13"
+                                       FontFamily="Segoe UI Variable, Segoe UI"
+                                       Visibility="{x:Bind ViewModel.IsNpuProcessing, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+                            <StackPanel Orientation="Horizontal" Spacing="16">
+                                <StackPanel>
+                                    <TextBlock Text="Customer" Style="{StaticResource CaptionStyle}" />
+                                    <TextBlock Text="Active Session" FontSize="14" Foreground="#18181B"
+                                               FontFamily="Segoe UI Variable, Segoe UI" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Form Completion Card -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel Spacing="12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Form Completion" FontSize="16"
+                                           FontWeight="SemiBold" Foreground="#18181B"
+                                           FontFamily="Segoe UI Variable, Segoe UI" />
+                                <TextBlock Grid.Column="1" FontSize="16" FontWeight="Bold"
+                                           Foreground="#18181B" FontFamily="Segoe UI Variable, Segoe UI"
+                                           Text="{x:Bind ViewModel.FormCompletionDisplay, Mode=OneWay}" />
+                            </Grid>
+                            <!-- Progress bar (Border-based) -->
+                            <Border Background="#E5E7EB" CornerRadius="4" Height="8">
+                                <Border Background="#18181B" CornerRadius="4"
+                                        HorizontalAlignment="Left" Width="120" />
+                            </Border>
+                            <TextBlock Style="{StaticResource CaptionStyle}"
+                                       Text="{x:Bind ViewModel.FormCompletionDisplay, Mode=OneWay}" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Next Best Question Card -->
+                    <Border Background="#FFFFFF" BorderBrush="#E5E7EB" BorderThickness="1"
+                            CornerRadius="8" Padding="0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="4" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Background="#0B5CAD" CornerRadius="8,0,0,8" />
+                            <StackPanel Grid.Column="1" Spacing="6" Padding="20">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Text="&#xEA80;" FontFamily="Segoe MDL2 Assets"
+                                               FontSize="16" Foreground="#0B5CAD"
+                                               VerticalAlignment="Center" />
+                                    <TextBlock Text="Next Best Question" FontSize="16"
+                                               FontWeight="SemiBold" Foreground="#0B5CAD"
+                                               FontFamily="Segoe UI Variable, Segoe UI" />
+                                </StackPanel>
+                                <TextBlock Text="{x:Bind ViewModel.NextBestQuestion, Mode=OneWay}"
+                                           TextWrapping="Wrap" FontSize="14" Foreground="#18181B"
+                                           FontFamily="Segoe UI Variable, Segoe UI" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Transcript Card -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="&#xE8DC;" FontFamily="Segoe MDL2 Assets"
+                                           FontSize="16" Foreground="#18181B"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Text="Transcript" FontSize="16" FontWeight="SemiBold"
+                                           Foreground="#18181B"
+                                           FontFamily="Segoe UI Variable, Segoe UI" />
+                            </StackPanel>
+                            <Border Background="#FFFFFF" CornerRadius="6" Padding="12"
+                                    MinHeight="200" MaxHeight="400">
+                                <ScrollViewer>
+                                    <ItemsRepeater ItemsSource="{x:Bind ViewModel.TranscriptSegments}">
+                                        <ItemsRepeater.ItemTemplate>
+                                            <DataTemplate x:DataType="models:TranscriptSegment">
+                                                <Border Padding="10,8" Margin="0,2"
+                                                        CornerRadius="6" Background="#FFFFFF">
+                                                    <Grid ColumnSpacing="12">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="56" />
+                                                            <ColumnDefinition Width="80" />
+                                                            <ColumnDefinition Width="*" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Grid.Column="0"
+                                                                   Text="{x:Bind Timestamp}"
+                                                                   Foreground="#71717A" FontSize="12"
+                                                                   FontFamily="Consolas" />
+                                                        <TextBlock Grid.Column="1"
+                                                                   Text="{x:Bind Speaker}"
+                                                                   FontWeight="SemiBold" FontSize="13"
+                                                                   Foreground="#18181B" />
+                                                        <TextBlock Grid.Column="2"
+                                                                   Text="{x:Bind Text}"
+                                                                   TextWrapping="Wrap" FontSize="14"
+                                                                   Foreground="#18181B" />
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsRepeater.ItemTemplate>
+                                    </ItemsRepeater>
+                                </ScrollViewer>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Right sidebar: extracted data -->
+            <ScrollViewer Grid.Column="1">
+                <StackPanel Spacing="20">
+
+                    <!-- Extracted Fields Card -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="&#xE762;" FontFamily="Segoe MDL2 Assets"
+                                           FontSize="16" Foreground="#18181B"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Text="Extracted Fields" FontSize="16"
+                                           FontWeight="SemiBold" Foreground="#18181B"
+                                           FontFamily="Segoe UI Variable, Segoe UI" />
+                            </StackPanel>
+                            <ItemsRepeater ItemsSource="{x:Bind ViewModel.ExtractedFields}">
+                                <ItemsRepeater.ItemTemplate>
+                                    <DataTemplate x:DataType="models:ExtractedFieldValue">
+                                        <Border Background="#FFFFFF" CornerRadius="6"
+                                                Padding="12,10" Margin="0,3">
+                                            <Grid RowSpacing="4">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Row="0" Grid.Column="0"
+                                                           Text="{x:Bind FieldId}"
+                                                           FontWeight="SemiBold" FontSize="13"
+                                                           Foreground="#18181B" />
+                                                <Border Grid.Row="0" Grid.Column="1"
+                                                        CornerRadius="20" Padding="8,2"
+                                                        Background="#19352F">
+                                                    <TextBlock FontSize="11" Foreground="#10B981"
+                                                               Text="{x:Bind Confidence}" />
+                                                </Border>
+                                                <TextBlock Grid.Row="1" Grid.Column="0"
+                                                           Grid.ColumnSpan="2"
+                                                           Text="{x:Bind Value}"
+                                                           TextWrapping="Wrap" FontSize="14"
+                                                           Foreground="#18181B" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsRepeater.ItemTemplate>
+                            </ItemsRepeater>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Missing Fields Card -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets"
+                                           FontSize="16" Foreground="#C77B00"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Text="Missing Fields" FontSize="16"
+                                           FontWeight="SemiBold" Foreground="#18181B"
+                                           FontFamily="Segoe UI Variable, Segoe UI" />
+                            </StackPanel>
+                            <ItemsRepeater ItemsSource="{x:Bind ViewModel.MissingFields}">
+                                <ItemsRepeater.ItemTemplate>
+                                    <DataTemplate x:DataType="x:String">
+                                        <Border Background="#FFF7E6" BorderBrush="#F2C879"
+                                                BorderThickness="1" CornerRadius="20"
+                                                Padding="12,6" Margin="0,3">
+                                            <TextBlock Text="{x:Bind}" FontSize="13"
+                                                       Foreground="#8A5A00" />
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsRepeater.ItemTemplate>
+                            </ItemsRepeater>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Assistant panel (toggled) -->
+            <Border Grid.Column="2" Width="360" Background="#FFFFFF"
+                    BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8"
+                    Visibility="{x:Bind ViewModel.IsAssistantPanelOpen, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                <Grid RowSpacing="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Header -->
+                    <Border Grid.Row="0" Padding="16,14" BorderBrush="#E5E7EB"
+                            BorderThickness="0,0,0,1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="&#xE99A;" FontFamily="Segoe MDL2 Assets"
+                                           FontSize="16" Foreground="#18181B"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Text="Advisor Assistant" FontSize="16"
+                                           FontWeight="SemiBold" Foreground="#18181B"
+                                           FontFamily="Segoe UI Variable, Segoe UI" />
+                            </StackPanel>
+                            <Button Grid.Column="1"
+                                    Command="{x:Bind ViewModel.ToggleAssistantPanelCommand}"
+                                    Background="Transparent" BorderThickness="0"
+                                    Padding="6" CornerRadius="4">
+                                <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets"
+                                           FontSize="12" Foreground="#71717A" />
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <!-- Chat messages -->
+                    <ScrollViewer Grid.Row="1" Padding="12">
+                        <ItemsRepeater ItemsSource="{x:Bind ViewModel.AssistantMessages}">
+                            <ItemsRepeater.ItemTemplate>
+                                <DataTemplate x:DataType="models:AgentMessage">
+                                    <Border Margin="0,4" Padding="12,10" CornerRadius="8"
+                                            Background="#FFFFFF" MaxWidth="300"
+                                            HorizontalAlignment="Left">
+                                        <StackPanel Spacing="4">
+                                            <TextBlock Text="{x:Bind Role}" FontWeight="SemiBold"
+                                                       FontSize="11" Foreground="#71717A" />
+                                            <TextBlock Text="{x:Bind Content}" TextWrapping="Wrap"
+                                                       FontSize="14" Foreground="#18181B" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsRepeater.ItemTemplate>
+                        </ItemsRepeater>
+                    </ScrollViewer>
+
+                    <!-- Input area -->
+                    <Border Grid.Row="2" Padding="12" BorderBrush="#E5E7EB"
+                            BorderThickness="0,1,0,0">
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0"
+                                     Text="{x:Bind ViewModel.AssistantInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     PlaceholderText="Ask the assistant..."
+                                     CornerRadius="20" Padding="14,8"
+                                     BorderBrush="#E5E7EB" FontSize="14" />
+                            <Button Grid.Column="1"
+                                    Command="{x:Bind ViewModel.SendAssistantMessageCommand}"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    CornerRadius="20" Padding="14,8">
+                                <TextBlock Text="&#xE724;" FontFamily="Segoe MDL2 Assets"
+                                           FontSize="14" />
+                            </Button>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+
+</Page>
+
+

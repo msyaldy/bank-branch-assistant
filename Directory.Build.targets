@@ -1,0 +1,71 @@
+<Project>
+  <!--
+    WinUI 3 MRT/PRI generation and Appx packaging require Visual Studio Build Tools.
+    When the required DLLs are not present (dotnet CLI without VS), we override
+    all MrtCore.PriGen targets to no-ops so C# and XAML compilation can proceed.
+    Full MSIX/packaged builds should use Visual Studio.
+  -->
+  <PropertyGroup Condition="!Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\AppxPackage\Microsoft.Build.Packaging.Pri.Tasks.dll')">
+    <AppxGeneratePriEnabled>false</AppxGeneratePriEnabled>
+    <AppxPackage>false</AppxPackage>
+    <WindowsPackageType>None</WindowsPackageType>
+    <EnableMsixTooling>false</EnableMsixTooling>
+    <_SkipMrtTargets>true</_SkipMrtTargets>
+    <!-- Suppress MSIX BuildTools validation for CLI builds -->
+    <_SuppressMsixBuildToolsValidation>true</_SuppressMsixBuildToolsValidation>
+  </PropertyGroup>
+
+  <!-- Override all MrtCore.PriGen targets when VS Build Tools are missing -->
+  <Target Name="_GenerateProjectPriFile" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="BeforeGenerateProjectPriFile" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="_GeneratePrisForPortableLibraries" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="_GetPriFilesFromPayload" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="_ComputeInputPriFiles" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="_GenerateProjectPriConfigurationFiles" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="_CalculateInputsForGenerateProjectPriFileCore" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="_GenerateProjectPriFileCore" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="_AddFileReadsAndFileWritesForProjectPri" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="_CreateProjectPriFileItem" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="_ExpandProjectPriFile" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="_SetPortablePriProperties" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="AddPriPayloadFilesToCopyToOutputDirectoryItems" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="_ExpandPriFiles" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="AfterGenerateProjectPriFile" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="_GetProjectArchitecture" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="GetMrtPackagingOutputs" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="GetOptionalProjectOutputs" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="_GetRecursiveProjectArchitecture" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="_GetPackageArchitecture" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="_GetDefaultResourceLanguage" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="CopyLocalFilesOutputGroup" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="GetCopyToOutputDirectoryItemsOutputGroup" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="OptionalProjectsOutputGroup" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="ComFilesOutputGroup" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="CopyWinmdArtifactsOutputGroup" Condition="'$(_SkipMrtTargets)' != 'true'" />
+  <Target Name="_ValidateConfiguration" Condition="'$(_SkipMrtTargets)' != 'true'" />
+
+  <!--
+    When MRT targets are skipped, generate a minimal resources.pri via makepri.exe
+    so the WinUI 3 XAML runtime can resolve resources at startup.
+  -->
+  <Target Name="_GenerateMinimalPri"
+          AfterTargets="Build"
+          Condition="'$(_SkipMrtTargets)' == 'true' AND '$(OutputType)' == 'WinExe' AND Exists('$(_MakePriExe)')">
+    <PropertyGroup>
+      <_MakePriExe>$([MSBuild]::NormalizePath('$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x86\makepri.exe'))</_MakePriExe>
+      <_MakePriExeFallback>C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x86\makepri.exe</_MakePriExeFallback>
+      <_PriTempDir>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)\$(IntermediateOutputPath)_pri_temp\'))</_PriTempDir>
+      <_PriOutputFile>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)\$(OutputPath)resources.pri'))</_PriOutputFile>
+    </PropertyGroup>
+    <PropertyGroup Condition="!Exists('$(_MakePriExe)')">
+      <_MakePriExe>$(_MakePriExeFallback)</_MakePriExe>
+    </PropertyGroup>
+    <MakeDir Directories="$(_PriTempDir)" />
+    <!-- Write a priconfig without <packaging> node so AutoMerge (/am) can be used.
+         AutoMerge enables the WinUI 3 runtime to discover Microsoft.UI.Xaml theme resources
+         from adjacent PRI files (Microsoft.UI.pri, Microsoft.UI.Xaml.Controls.pri). -->
+    <WriteLinesToFile File="$(_PriTempDir)priconfig.xml" Overwrite="true" Lines="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;;&lt;resources targetOsVersion=&quot;10.0.0&quot; majorVersion=&quot;1&quot;&gt;;&lt;index root=&quot;\&quot; startIndexAt=&quot;\&quot;&gt;;&lt;default&gt;&lt;qualifier name=&quot;Language&quot; value=&quot;en-US&quot;/&gt;&lt;/default&gt;;&lt;indexer-config type=&quot;folder&quot; foldernameAsQualifier=&quot;true&quot; filenameAsQualifier=&quot;true&quot; qualifierDelimiter=&quot;.&quot;/&gt;;&lt;indexer-config type=&quot;resw&quot; convertDotsToSlashes=&quot;true&quot; initialPath=&quot;&quot;/&gt;;&lt;indexer-config type=&quot;PRI&quot;/&gt;;&lt;/index&gt;;&lt;/resources&gt;" />
+    <Exec Command="&quot;$(_MakePriExe)&quot; new /pr &quot;$(MSBuildProjectDirectory)\Strings&quot; /cf &quot;$(_PriTempDir)priconfig.xml&quot; /of &quot;$(_PriOutputFile)&quot; /mn &quot;$(MSBuildProjectDirectory)\Package.appxmanifest&quot; /am /o" />
+    <RemoveDir Directories="$(_PriTempDir)" />
+  </Target>
+</Project>
